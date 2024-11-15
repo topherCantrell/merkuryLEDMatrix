@@ -22,7 +22,9 @@ I added a SPDT switch to select the neopixel input: original or my raspberry pi 
 I removed the existing USB power cable. I'll use a full USB cable that carries data (for programming) and
 power. I wired the pico VBUS and GND to the circuit board where the old USB cable was attached.
 
-The pico GP0 pin drives the neopixels.
+The pico GP0 pin drives the neopixels. The pico is a 3.3V part, but the neopixels on my board recognizes the 
+logic levels correctly. If your panel does not, you can add a level shifter such as: 
+[DEVMO-Converter-Bi-Directional-Module-Arduino/dp/B07SZQMWFS](https://www.amazon.com/DEVMO-Converter-Bi-Directional-Module-Arduino/dp/B07SZQMWFS)
 
 <img src="art/parts.jpg" width="400px">
 
