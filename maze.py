@@ -11,7 +11,7 @@ neo = neopixel.NeoPixel(board.GP6, 256, auto_write=False)
 neo.fill((0,0,10))
 neo.show()
 
-# MPU6050 accelerometer on an I2C bus
+# MPU6050 accelerometer on an I2C bus 1: GP15 and GP14
 acc_i2c = busio.I2C(board.GP15, board.GP14)
 mpu = adafruit_mpu6050.MPU6050(acc_i2c)
 
@@ -87,7 +87,7 @@ class Maze:
             free_neighbors = self.get_empty_neighbors(cx, cy, Maze.DIRS)    
             available = []
             for i, nx, ny in free_neighbors:
-                # For each free neighbor, check the 5 spots around it in the direction
+                # For each free neighbor, check the 5 spots around it in the direction of travel
                 clear_spots = self.get_empty_neighbors(nx, ny, Maze.CHECK_FOR_DIR[i])
                 if len(clear_spots)==5:
                     # Five spots free ... this is a valid move
@@ -98,8 +98,10 @@ class Maze:
                 del cells[n]        
                 continue
 
-            # Carve out this cell and add it to our growth list
+            # Pick a random available neighbor
             _, nx, ny = available[random.randint(0, len(available)-1)]
+
+            # Carve out this cell and add it to our growth list
             self.set_cell(nx, ny, 0)
             cells.append((nx, ny))
         
@@ -108,13 +110,13 @@ def play():
 
     # Get a random maze wall color
     r,g,b = random.randint(0,100), random.randint(0,100), random.randint(0,100)
+    
+    # Generate a random 16x16 maze
     m = Maze(16,16)
-
-    # Generat a random 16x16 maze
     m.fill(1)    # Fill with walls ...
     m.generate() # ... and carve out a path through the maze
 
-    # Copy the maze to the neopixels
+    # Copy the maze to the neopixel display
     for y in range(m.height):
         for x in range(m.width):
             if m.get_cell(x, y) == 1:
@@ -122,14 +124,14 @@ def play():
             else:
                 neo[y*16+x] = (0,0,0)
 
-    # Add a treasure to the maze
+    # Add a yellow treasure to the maze
     treasure_x, treasure_y = random.randint(0,15), random.randint(0,15)
     while m.get_cell(treasure_x, treasure_y) != 0:
         treasure_x, treasure_y = random.randint(0,15), random.randint(0,15)
     m.set_cell(treasure_x, treasure_y, 2)
     neo[treasure_y*16+treasure_x] = (50,50,0)
 
-    # Add the player to the maze
+    # Add the blue player to the maze
     player_x, player_y = random.randint(0,15), random.randint(0,15)
     while m.get_cell(player_x, player_y) != 0:
         player_x, player_y = random.randint(0,15), random.randint(0,15)
@@ -140,10 +142,10 @@ def play():
 
     while True:
 
-        # Read the accelerometer. Each axis is around -9.8 to 9.8.
+        # Read the accelerometer. Each axis is roughly -9.8 to 9.8.
         dx, dy = 0,0
         y_acc, x_acc, z_acc = mpu.acceleration
-        # Simple input mapping here. If the accelerometer is tilted more than 2 units.
+        # Simple input mapping here. If the accelerometer is tilted more than 2m/ss.
         if x_acc < -2:
             dx = -1
         elif x_acc > 2:
@@ -153,7 +155,7 @@ def play():
         elif y_acc > 2:
             dy = 1
 
-        # This is where the player would like to be
+        # This is where the player would like to move to
         nx = player_x + dx
         ny = player_y + dy
 
