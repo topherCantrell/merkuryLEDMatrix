@@ -2,11 +2,11 @@ import neopixel
 import board
 import time
 import random
-import busio
-import adafruit_nunchuk
+# import busio
+# import adafruit_nunchuk
 
-i2c = busio.I2C(board.GP13, board.GP12)
-nc = adafruit_nunchuk.Nunchuk(i2c)
+# i2c = busio.I2C(board.GP13, board.GP12)
+# nc = adafruit_nunchuk.Nunchuk(i2c)
 
 pixels = neopixel.NeoPixel(board.GP6, 256, auto_write=False)
 
