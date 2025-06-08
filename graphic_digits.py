@@ -5,6 +5,9 @@ def draw_digit(grid, digit, x, y, palette_offset=0):
     """Draw a single digit on the NeoPixels at position (x,y)"""
     grid.draw_image(x, y, 3, 5, DIGITS[digit*15:(digit+1)*15], palette_offset)
 
+def draw_number_centered(grid, number, x, y, palette_offset=0):
+    draw_number(grid, number, x - len(str(number)) * 2 + 1, y, palette_offset)
+
 def draw_number(grid, number, x, y, palette_offset=0):
     """Draw a number on the NeoPixels at position (x,y)"""
     digits = str(number)

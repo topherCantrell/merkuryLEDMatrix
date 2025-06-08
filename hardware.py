@@ -7,7 +7,7 @@ import adafruit_mpu6050
 
 class MerkuryHardware:
 
-    def __init__(self):
+    def __init__(self, use_nunchuk=True):
 
         # Strand of 256 neopixels on pin GP6
         self._neo_pixels = neopixel.NeoPixel(board.GP6, 256, auto_write=False)
@@ -18,10 +18,12 @@ class MerkuryHardware:
         self._acc_i2c = busio.I2C(board.GP15, board.GP14)
         self._mpu = adafruit_mpu6050.MPU6050(self._acc_i2c)
 
-        # Nunchuk on I2C bus 0: GP1 and GP0
-        # It might be plugged in later, so we don't create it yet
-        self._nc_i2c = busio.I2C(board.GP1, board.GP0)
-        self._nunchuk = None       
+        # Not every panel has a nunchuk
+        if use_nunchuk:
+            # Nunchuk on I2C bus 0: GP1 and GP0
+            # It might be plugged in later, so we don't create it yet
+            self._nc_i2c = busio.I2C(board.GP1, board.GP0)
+            self._nunchuk = None       
 
     def get_neo_pixels(self):
         """return the neopixels object
